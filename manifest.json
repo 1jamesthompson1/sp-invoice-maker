@@ -1,0 +1,19 @@
+{
+  "id": "invoice-maker",
+  "name": "Invoice Maker",
+  "version": "1.0.0",
+  "description": "Allows you to create PDF invoices from your project tasks.",
+  "manifestVersion": 1,
+  "minSupVersion": "14.0.0",
+  "iFrame": true,
+  "sidePanel": false,
+  "permissions": [
+    "getTasks",
+    "getArchivedTasks",
+    "getAllProjects",
+    "openDialog",
+    "showSnack",
+    "persistDataSynced",
+    "loadSyncedData"
+  ]
+}

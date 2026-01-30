@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoice Maker - Client Management</title>
+
+    <!-- CSS must be inlined -->
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        padding: 20px;
+        background: #f5f5f5;
+        margin: 0;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        color: #555;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        font-size: 1.3em;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #ddd;
+      }
+
+      .tab {
+        background: transparent;
+        border: none;
+        padding: 12px 24px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.2s;
+      }
+
+      .tab:hover {
+        color: #333;
+        background: #f0f0f0;
+      }
+
+      .tab.active {
+        color: #4caf50;
+        border-bottom-color: #4caf50;
+        font-weight: 600;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.2s;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #4caf50;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background: #45a049;
+      }
+
+      button.secondary {
+        background: #757575;
+      }
+
+      button.secondary:hover {
+        background: #616161;
+      }
+
+      button.danger {
+        background: #f44336;
+      }
+
+      button.danger:hover {
+        background: #d32f2f;
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .client-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .client-item {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+      }
+
+      .client-info {
+        flex: 1;
+      }
+
+      .client-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      .client-details {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+      }
+
+      .client-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .client-actions button {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      .project-list {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #eee;
+      }
+
+      .project-item {
+        padding: 8px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        background: #e8f5e9;
+        color: #2e7d32;
+        margin-left: 8px;
+      }
+
+      .badge.warning {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+      }
+
+      .small-text {
+        font-size: 12px;
+        color: #888;
+        margin-top: 4px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📄 Invoice Maker</h1>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="mydetails">My Details</button>
+      <button class="tab" data-tab="clients">Clients</button>
+      <button class="tab" data-tab="projects">Project Assignment</button>
+    </div>
+
+    <!-- My Details Tab -->
+    <div class="tab-content active" id="mydetails-tab">
+      <div class="card">
+        <h2>Your Business Information</h2>
+        <p style="color: #666; margin-bottom: 20px;">This information will appear on your invoices.</p>
+        
+        <form id="mydetails-form">
+          <div class="form-group">
+            <label>Business/Your Name *</label>
+            <input type="text" id="my-name" required placeholder="e.g., John Smith Consulting">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="my-email" placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="my-phone" placeholder="+1 234 567 8900">
+          </div>
+
+          <div class="form-group">
+            <label>Business Address</label>
+            <textarea id="my-address" placeholder="Street, City, Postal Code, Country"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Website</label>
+            <input type="text" id="my-website" placeholder="https://yourwebsite.com">
+          </div>
+
+          <div class="form-group">
+            <label>Tax ID / Business Number (optional)</label>
+            <input type="text" id="my-tax-id" placeholder="e.g., ABN, EIN, VAT Number">
+          </div>
+
+          <div class="form-group">
+            <label>Bank Details (optional)</label>
+            <textarea id="my-bank" placeholder="Bank name, Account number, Routing number, etc."></textarea>
+            <div class="small-text">This will appear on invoices for client payments</div>
+          </div>
+
+          <button type="submit">Save My Details</button>
+        </form>
+      </div>
+
+      <div id="mydetails-preview" style="display: none;">
+        <h2>Preview</h2>
+        <div class="card">
+          <div id="preview-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clients Tab -->
+    <div class="tab-content" id="clients-tab">
+      <div class="card">
+        <h2>Add New Client</h2>
+        <form id="client-form">
+          <div class="form-group">
+            <label>Client Name *</label>
+            <input type="text" id="client-name" required placeholder="e.g., Acme Corporation">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="client-email" placeholder="client@example.com">
+          </div>
+
+          <div class="form-group">
+            <label>Billing Address</label>
+            <textarea id="client-address" placeholder="Street, City, Postal Code, Country"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Hourly Rate ($/hr) *</label>
+            <input type="number" id="client-rate" required min="0" step="0.01" placeholder="e.g., 75.00">
+          </div>
+
+          <div class="form-group">
+            <label>Tax Name (e.g., GST, VAT)</label>
+            <input type="text" id="client-tax-name" placeholder="e.g., GST">
+          </div>
+
+          <div class="form-group">
+            <label>Tax Rate (%)</label>
+            <input type="number" id="client-tax-rate" min="0" max="100" step="0.01" placeholder="e.g., 15">
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="client-tax-enabled">
+              <label for="client-tax-enabled" style="margin-bottom: 0;">Apply tax to invoices</label>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit">Save Client</button>
+            <button type="button" class="secondary" id="cancel-edit">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <h2>Your Clients</h2>
+      <div id="clients-list" class="client-list">
+        <div class="empty-state">No clients yet. Add your first client above!</div>
+      </div>
+    </div>
+
+    <!-- Project Assignment Tab -->
+    <div class="tab-content" id="projects-tab">
+      <div class="card">
+        <h2>Assign Projects to Clients</h2>
+        <p style="color: #666; margin-bottom: 20px;">Link your Super Productivity projects to clients for invoice generation.</p>
+        
+        <div class="form-group">
+          <label>Select Project *</label>
+          <select id="project-select">
+            <option value="">-- Select a project --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Assign to Client *</label>
+          <select id="client-select">
+            <option value="">-- Select a client --</option>
+          </select>
+        </div>
+
+        <button id="assign-project">Assign Project</button>
+      </div>
+
+      <h2>Project Assignments</h2>
+      <div id="assignments-list">
+        <div class="empty-state">No project assignments yet.</div>
+      </div>
+    </div>
+
+    <!-- JavaScript must be inlined -->
+    <script>
+      // State management
+      let myDetails = null;
+      let clients = [];
+      let projectAssignments = {}; // projectId -> clientId
+      let projects = [];
+      let editingClientId = null;
+
+      // Initialize
+      async function init() {
+        await loadData();
+        await loadProjects();
+        renderMyDetails();
+        renderClients();
+        renderProjectAssignments();
+        updateProjectSelect();
+        updateClientSelect();
+      }
+
+      // Load data from storage
+      async function loadData() {
+        try {
+          const data = await PluginAPI.loadSyncedData();
+          if (data) {
+            const parsed = JSON.parse(data);
+            myDetails = parsed.myDetails || null;
+            clients = parsed.clients || [];
+            projectAssignments = parsed.projectAssignments || {};
+          }
+        } catch (error) {
+          console.error('Error loading data:', error);
+        }
+      }
+
+      // Save data to storage
+      async function saveData() {
+        try {
+          const data = JSON.stringify({
+            myDetails: myDetails,
+            clients: clients,
+            projectAssignments: projectAssignments
+          });
+          await PluginAPI.persistDataSynced(data);
+        } catch (error) {
+          console.error('Error saving data:', error);
+          PluginAPI.showSnack({
+            msg: 'Error saving data',
+            type: 'ERROR'
+          });
+        }
+      }
+
+      // Load projects from Super Productivity
+      async function loadProjects() {
+        try {
+          projects = await PluginAPI.getAllProjects();
+        } catch (error) {
+          console.error('Error loading projects:', error);
+          PluginAPI.showSnack({
+            msg: 'Error loading projects',
+            type: 'ERROR'
+          });
+        }
+      }
+
+      // My Details form submission
+      document.getElementById('mydetails-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        myDetails = {
+          name: document.getElementById('my-name').value,
+          email: document.getElementById('my-email').value,
+          phone: document.getElementById('my-phone').value,
+          address: document.getElementById('my-address').value,
+          website: document.getElementById('my-website').value,
+          taxId: document.getElementById('my-tax-id').value,
+          bankDetails: document.getElementById('my-bank').value
+        };
+
+        await saveData();
+        renderMyDetails();
+
+        PluginAPI.showSnack({
+          msg: 'Your details saved successfully',
+          type: 'SUCCESS'
+        });
+      });
+
+      // Render my details
+      function renderMyDetails() {
+        if (myDetails && myDetails.name) {
+          // Populate form
+          document.getElementById('my-name').value = myDetails.name || '';
+          document.getElementById('my-email').value = myDetails.email || '';
+          document.getElementById('my-phone').value = myDetails.phone || '';
+          document.getElementById('my-address').value = myDetails.address || '';
+          document.getElementById('my-website').value = myDetails.website || '';
+          document.getElementById('my-tax-id').value = myDetails.taxId || '';
+          document.getElementById('my-bank').value = myDetails.bankDetails || '';
+
+          // Show preview
+          document.getElementById('mydetails-preview').style.display = 'block';
+          const preview = document.getElementById('preview-content');
+          preview.innerHTML = `
+            <strong style="font-size: 18px; color: #333;">${escapeHtml(myDetails.name)}</strong><br>
+            ${myDetails.email ? `📧 ${escapeHtml(myDetails.email)}<br>` : ''}
+            ${myDetails.phone ? `📞 ${escapeHtml(myDetails.phone)}<br>` : ''}
+            ${myDetails.address ? `<div style="margin-top: 8px; white-space: pre-line;">${escapeHtml(myDetails.address)}</div>` : ''}
+            ${myDetails.website ? `<div style="margin-top: 8px;">🌐 ${escapeHtml(myDetails.website)}</div>` : ''}
+            ${myDetails.taxId ? `<div style="margin-top: 8px;"><strong>Tax ID:</strong> ${escapeHtml(myDetails.taxId)}</div>` : ''}
+            ${myDetails.bankDetails ? `<div style="margin-top: 8px;"><strong>Bank Details:</strong><br><span style="white-space: pre-line;">${escapeHtml(myDetails.bankDetails)}</span></div>` : ''}
+          `;
+        }
+      }
+
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.dataset.tab;
+          
+          // Update tab buttons
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          // Update tab content
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          document.getElementById(`${tabName}-tab`).classList.add('active');
+        });
+      });
+
+      // Client form submission
+      document.getElementById('client-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const client = {
+          id: editingClientId || Date.now().toString(),
+          name: document.getElementById('client-name').value,
+          email: document.getElementById('client-email').value,
+          address: document.getElementById('client-address').value,
+          hourlyRate: parseFloat(document.getElementById('client-rate').value),
+          taxName: document.getElementById('client-tax-name').value || 'Tax',
+          taxRate: parseFloat(document.getElementById('client-tax-rate').value) || 0,
+          taxEnabled: document.getElementById('client-tax-enabled').checked
+        };
+
+        if (editingClientId) {
+          // Update existing client
+          const index = clients.findIndex(c => c.id === editingClientId);
+          clients[index] = client;
+          PluginAPI.showSnack({
+            msg: 'Client updated successfully',
+            type: 'SUCCESS'
+          });
+        } else {
+          // Add new client
+          clients.push(client);
+          PluginAPI.showSnack({
+            msg: 'Client added successfully',
+            type: 'SUCCESS'
+          });
+        }
+
+        await saveData();
+        resetForm();
+        renderClients();
+        updateClientSelect();
+      });
+
+      // Cancel edit button
+      document.getElementById('cancel-edit').addEventListener('click', () => {
+        resetForm();
+      });
+
+      // Reset form
+      function resetForm() {
+        editingClientId = null;
+        document.getElementById('client-form').reset();
+        document.querySelector('#client-form button[type="submit"]').textContent = 'Save Client';
+      }
+
+      // Edit client
+      function editClient(clientId) {
+        const client = clients.find(c => c.id === clientId);
+        if (!client) return;
+
+        editingClientId = clientId;
+        document.getElementById('client-name').value = client.name;
+        document.getElementById('client-email').value = client.email || '';
+        document.getElementById('client-address').value = client.address || '';
+        document.getElementById('client-rate').value = client.hourlyRate;
+        document.getElementById('client-tax-name').value = client.taxName || '';
+        document.getElementById('client-tax-rate').value = client.taxRate || 0;
+        document.getElementById('client-tax-enabled').checked = client.taxEnabled;
+
+        document.querySelector('#client-form button[type="submit"]').textContent = 'Update Client';
+        
+        // Scroll to form
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Delete client
+      async function deleteClient(clientId) {
+        const confirmed = await PluginAPI.openDialog({
+          title: 'Delete Client',
+          content: 'Are you sure you want to delete this client? Project assignments will be removed.',
+          okBtnLabel: 'Delete',
+          cancelBtnLabel: 'Cancel'
+        });
+
+        if (confirmed) {
+          clients = clients.filter(c => c.id !== clientId);
+          
+          // Remove project assignments
+          for (const projectId in projectAssignments) {
+            if (projectAssignments[projectId] === clientId) {
+              delete projectAssignments[projectId];
+            }
+          }
+
+          await saveData();
+          renderClients();
+          renderProjectAssignments();
+          updateClientSelect();
+
+          PluginAPI.showSnack({
+            msg: 'Client deleted',
+            type: 'SUCCESS'
+          });
+        }
+      }
+
+      // Render clients list
+      function renderClients() {
+        const container = document.getElementById('clients-list');
+        
+        if (clients.length === 0) {
+          container.innerHTML = '<div class="empty-state">No clients yet. Add your first client above!</div>';
+          return;
+        }
+
+        container.innerHTML = clients.map(client => {
+          const assignedProjects = Object.entries(projectAssignments)
+            .filter(([_, clientId]) => clientId === client.id)
+            .map(([projectId, _]) => projects.find(p => p.id === projectId))
+            .filter(p => p);
+
+          return `
+            <div class="client-item">
+              <div class="client-info">
+                <div class="client-name">${escapeHtml(client.name)}</div>
+                <div class="client-details">
+                  ${client.email ? `📧 ${escapeHtml(client.email)}<br>` : ''}
+                  💵 $${client.hourlyRate.toFixed(2)}/hr
+                  ${client.taxEnabled ? `<span class="badge">+${client.taxRate}% ${escapeHtml(client.taxName)}</span>` : ''}
+                  <div class="small-text">${assignedProjects.length} project(s) assigned</div>
+                </div>
+              </div>
+              <div class="client-actions">
+                <button class="secondary" onclick="editClient('${client.id}')">Edit</button>
+                <button class="danger" onclick="deleteClient('${client.id}')">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Update project select dropdown
+      function updateProjectSelect() {
+        const select = document.getElementById('project-select');
+        select.innerHTML = '<option value="">-- Select a project --</option>';
+        
+        projects.forEach(project => {
+          const option = document.createElement('option');
+          option.value = project.id;
+          option.textContent = project.title;
+          select.appendChild(option);
+        });
+      }
+
+      // Update client select dropdown
+      function updateClientSelect() {
+        const select = document.getElementById('client-select');
+        select.innerHTML = '<option value="">-- Select a client --</option>';
+        
+        clients.forEach(client => {
+          const option = document.createElement('option');
+          option.value = client.id;
+          option.textContent = client.name;
+          select.appendChild(option);
+        });
+      }
+
+      // Assign project to client
+      document.getElementById('assign-project').addEventListener('click', async () => {
+        const projectId = document.getElementById('project-select').value;
+        const clientId = document.getElementById('client-select').value;
+
+        if (!projectId || !clientId) {
+          PluginAPI.showSnack({
+            msg: 'Please select both a project and a client',
+            type: 'WARNING'
+          });
+          return;
+        }
+
+        projectAssignments[projectId] = clientId;
+        await saveData();
+        
+        document.getElementById('project-select').value = '';
+        document.getElementById('client-select').value = '';
+
+        renderProjectAssignments();
+        renderClients();
+
+        PluginAPI.showSnack({
+          msg: 'Project assigned successfully',
+          type: 'SUCCESS'
+        });
+      });
+
+      // Remove project assignment
+      async function removeAssignment(projectId) {
+        delete projectAssignments[projectId];
+        await saveData();
+        renderProjectAssignments();
+        renderClients();
+
+        PluginAPI.showSnack({
+          msg: 'Assignment removed',
+          type: 'SUCCESS'
+        });
+      }
+
+      // Render project assignments
+      function renderProjectAssignments() {
+        const container = document.getElementById('assignments-list');
+        
+        const assignments = Object.entries(projectAssignments)
+          .map(([projectId, clientId]) => {
+            const project = projects.find(p => p.id === projectId);
+            const client = clients.find(c => c.id === clientId);
+            return { project, client, projectId };
+          })
+          .filter(a => a.project && a.client);
+
+        if (assignments.length === 0) {
+          container.innerHTML = '<div class="empty-state">No project assignments yet.</div>';
+          return;
+        }
+
+        container.innerHTML = assignments.map(({ project, client, projectId }) => `
+          <div class="client-item">
+            <div class="client-info">
+              <div class="client-name">${escapeHtml(project.title)}</div>
+              <div class="client-details">
+                → Assigned to <strong>${escapeHtml(client.name)}</strong> ($${client.hourlyRate.toFixed(2)}/hr)
+              </div>
+            </div>
+            <div class="client-actions">
+              <button class="danger" onclick="removeAssignment('${projectId}')">Remove</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Utility: escape HTML
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Wait for PluginAPI to be ready
+      function waitForPluginAPI() {
+        return new Promise((resolve) => {
+          if (typeof PluginAPI !== 'undefined') {
+            resolve();
+          } else {
+            const checkInterval = setInterval(() => {
+              if (typeof PluginAPI !== 'undefined') {
+                clearInterval(checkInterval);
+                resolve();
+              }
+            }, 100);
+          }
+        });
+      }
+
+      // Initialize on load
+      waitForPluginAPI().then(() => {
+        init();
+      });
+    </script>
+  </body>
+</html>
