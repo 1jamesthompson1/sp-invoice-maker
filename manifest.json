@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Allows you to create PDF invoices from your project tasks.",
   "manifestVersion": 1,
+  "icon": "receipt",
   "minSupVersion": "14.0.0",
   "iFrame": true,
   "sidePanel": false,
