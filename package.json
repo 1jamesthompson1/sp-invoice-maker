@@ -1,11 +1,12 @@
 {
   "name": "sp-invoice-maker",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Super Productivity plugin for creating invoices from project tasks",
+  "author": "James Thompson",
+  "homepage": "https://github.com/1jamesthompson1/sp-invoice-maker",
   "scripts": {
-    "build": "zip -q invoice-maker-v$npm_package_version.zip manifest.json plugin.js index.html && echo 'Built: invoice-maker-v'$npm_package_version'.zip'"
+    "build": "node build.js"
   },
   "keywords": ["super-productivity", "plugin", "invoice"],
-  "author": "",
   "license": "MIT"
 }

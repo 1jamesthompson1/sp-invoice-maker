@@ -1,8 +1,10 @@
 {
+  "version": "0.1.0",
+  "description": "Super Productivity plugin for creating invoices from project tasks",
+  "author": "James Thompson",
+  "homepage": "https://github.com/1jamesthompson1/sp-invoice-maker",
   "id": "invoice-maker",
   "name": "Invoice Maker",
-  "version": "1.0.0",
-  "description": "Allows you to create PDF invoices from your project tasks.",
   "manifestVersion": 1,
   "icon": "receipt",
   "minSupVersion": "14.0.0",

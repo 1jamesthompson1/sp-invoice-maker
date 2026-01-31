@@ -1,1 +1,0 @@
-// Register menu entry to open invoice maker UI

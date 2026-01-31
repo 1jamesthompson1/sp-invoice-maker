@@ -1,0 +1,241 @@
+    <h1>📄 Invoice Maker</h1>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="generate">Generate Invoice</button>
+      <button class="tab" data-tab="invoices">Invoices</button>
+      <button class="tab" data-tab="mydetails">My Details</button>
+      <button class="tab" data-tab="clients">Clients</button>
+      <button class="tab" data-tab="projects">Project Assignment</button>
+    </div>
+
+    <!-- My Details Tab -->
+    <div class="tab-content" id="mydetails-tab">
+      <div class="card">
+        <h2>Your Business Information</h2>
+        <p style="color: #666; margin-bottom: 20px;">This information will appear on your invoices.</p>
+        
+        <form id="mydetails-form">
+          <div class="form-group">
+            <label>Business/Your Name *</label>
+            <input type="text" id="my-name" required placeholder="e.g., John Smith Consulting">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="my-email" placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="my-phone" placeholder="+1 234 567 8900">
+          </div>
+
+          <div class="form-group">
+            <label>Business Address</label>
+            <textarea id="my-address" placeholder="Street, City, Postal Code, Country"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Website</label>
+            <input type="text" id="my-website" placeholder="https://yourwebsite.com">
+          </div>
+
+          <div class="form-group">
+            <label>Tax ID Label (optional)</label>
+            <input type="text" id="my-tax-id-label" placeholder="e.g., Tax ID, GST Number, ABN">
+            <div class="small-text">What to call your Tax ID on invoices</div>
+          </div>
+
+          <div class="form-group">
+            <label>Tax ID / Business Number (optional)</label>
+            <input type="text" id="my-tax-id" placeholder="e.g., ABN, EIN, VAT Number">
+          </div>
+
+          <div class="form-group">
+            <label>Bank Details (optional)</label>
+            <textarea id="my-bank" placeholder="Bank name, Account number, Routing number, etc."></textarea>
+            <div class="small-text">This will appear on invoices for client payments</div>
+          </div>
+
+          <h3 style="color: #555; margin-top: 32px; margin-bottom: 16px;">Invoice Template Settings</h3>
+
+          <div class="form-group">
+            <label>Invoice Title (optional)</label>
+            <input type="text" id="my-invoice-title" placeholder="e.g., Invoice" value="Invoice">
+            <div class="small-text">The title shown at the top of your invoices</div>
+          </div>
+
+          <div class="form-group">
+            <label>Invoice End Message (optional)</label>
+            <textarea id="my-invoice-message" placeholder="e.g., Thank you for your business!" style="min-height: 60px;"></textarea>
+            <div class="small-text">Custom message that appears at the end of your invoices</div>
+          </div>
+
+          <button type="submit">Save My Details</button>
+        </form>
+      </div>
+
+      <div id="mydetails-preview" style="display: none;">
+        <h2>Preview</h2>
+        <div class="card">
+          <div id="preview-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clients Tab -->
+    <div class="tab-content" id="clients-tab">
+      <div class="card">
+        <h2>Add New Client</h2>
+        <form id="client-form">
+          <div class="form-group">
+            <label>Client Name *</label>
+            <input type="text" id="client-name" required placeholder="e.g., Acme Corporation">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="client-email" placeholder="client@example.com">
+          </div>
+
+          <div class="form-group">
+            <label>Billing Address</label>
+            <textarea id="client-address" placeholder="Street, City, Postal Code, Country"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Hourly Rate ($/hr) *</label>
+            <input type="number" id="client-rate" required min="0" step="0.01" placeholder="e.g., 75.00">
+          </div>
+
+          <div class="form-group">
+            <label>Tax Name (e.g., GST, VAT)</label>
+            <input type="text" id="client-tax-name" placeholder="e.g., GST">
+          </div>
+
+          <div class="form-group">
+            <label>Tax Rate (%)</label>
+            <input type="number" id="client-tax-rate" min="0" max="100" step="0.01" placeholder="e.g., 15">
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="client-tax-enabled">
+              <label for="client-tax-enabled" style="margin-bottom: 0;">Apply tax to invoices</label>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="submit">Save Client</button>
+            <button type="button" class="secondary" id="cancel-edit">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <h2>Your Clients</h2>
+      <div id="clients-list" class="client-list">
+        <div class="empty-state">No clients yet. Add your first client above!</div>
+      </div>
+    </div>
+
+    <!-- Project Assignment Tab -->
+    <div class="tab-content" id="projects-tab">
+      <div class="card">
+        <h2>Assign Projects to Clients</h2>
+        <p style="color: #666; margin-bottom: 20px;">Link your Super Productivity projects to clients for invoice generation.</p>
+        
+        <div class="form-group">
+          <label>Select Project *</label>
+          <select id="project-select">
+            <option value="">-- Select a project --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Assign to Client *</label>
+          <select id="client-select">
+            <option value="">-- Select a client --</option>
+          </select>
+        </div>
+
+        <button id="assign-project">Assign Project</button>
+      </div>
+
+      <h2>Project Assignments</h2>
+      <div id="assignments-list">
+        <div class="empty-state">No project assignments yet.</div>
+      </div>
+    </div>
+
+    <!-- Generate Invoice Tab -->
+    <div class="tab-content active" id="generate-tab">
+      <div class="card">
+        <h2>Generate Invoice</h2>
+        <p style="color: #666; margin-bottom: 20px;">Create and preview an invoice for a client.</p>
+        
+        <form id="generate-invoice-form">
+          <div class="form-group">
+            <label>Select Client *</label>
+            <select id="gen-client-select" required>
+              <option value="">-- Select a client --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Invoice Date *</label>
+            <input type="date" id="gen-invoice-date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Period *</label>
+            <select id="gen-period-select" required>
+              <option value="week">This Week</option>
+              <option value="month" selected>This Month</option>
+              <option value="last-month">Last Month</option>
+              <option value="year">This Year</option>
+              <option value="custom-days">Last N Days</option>
+              <option value="custom-range">Custom Date Range</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="gen-custom-days-group" style="display: none;">
+            <label>Days Back *</label>
+            <input type="number" id="gen-custom-days" min="1" value="30">
+          </div>
+
+          <div class="form-group" id="gen-custom-range-group" style="display: none;">
+            <label>Start Date *</label>
+            <input type="date" id="gen-start-date">
+            <label style="margin-top: 16px;">End Date *</label>
+            <input type="date" id="gen-end-date">
+          </div>
+
+          <div class="form-group">
+            <label>Itemization *</label>
+            <select id="gen-itemization-select" required>
+              <option value="1">Project Only (Single Line)</option>
+              <option value="2" selected>Show Main Tasks</option>
+            </select>
+          </div>
+
+          <button type="submit">Generate Invoice</button>
+        </form>
+      </div>
+
+      <div id="invoice-preview" style="display: none; margin-top: 20px;">
+        <h2>Invoice Preview</h2>
+        <div id="invoice-iframe-container"></div>
+      </div>
+    </div>
+
+    <!-- Invoices Tab -->
+    <div class="tab-content" id="invoices-tab">
+      <div class="card">
+        <h2>Generated Invoices</h2>
+        <p style="color: #666; margin-bottom: 20px;">View all invoices you have generated.</p>
+      </div>
+
+      <div id="invoices-list">
+        <div class="empty-state">No invoices generated yet.</div>
+      </div>
+    </div>
