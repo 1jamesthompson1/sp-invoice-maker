@@ -1,9 +1,5 @@
-This is a invoice maker.
+# Invoice maker plugin for Super Productivity
 
-It generates PDF invoices from time worked on tasks.
+**Warning doesn't currently work (bug with hours calculation)**
 
-You can specify the clients details, your details and the hourly rate for each project.
-
-# Things to add:
-- [x] A UI that allows for you to set projects and their hourly rates, clients and their details etc. Also match projects to clients.
-- [ ] The logic that goes through the time entires calcualtes values and generate a PDF invoice. Maybe can be done not in ifrmame to allow import?
+This plugin is 90% of the way there. However there is some bug in the hours calculation that I can't figure out. So currently the amounts it adds up for a month isn't the same as super-productivity. Maybe some timezone issue.

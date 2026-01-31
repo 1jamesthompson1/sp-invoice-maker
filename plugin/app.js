@@ -28,6 +28,21 @@
           myDetails.taxIdLabel = 'Tax ID';
         }
         
+        // Create example client on first install if no clients exist
+        if (!clients || clients.length === 0) {
+          clients = [{
+            id: 'example-client-' + Date.now(),
+            name: 'Example Client Inc.',
+            email: 'john@example.com',
+            address: '123 Business Street, Suite 100',
+            taxRate: 20,
+            taxName: 'VAT',
+            hourlyRate: 100,
+            taxEnabled: true
+          }];
+          await saveData();
+        }
+        
         renderMyDetails();
         renderClients();
         renderProjectAssignments();
@@ -665,7 +680,8 @@
           const projectTasks = {};
 
           allTasks.forEach(task => {
-            if (task.timeSpent && task.timeSpent > 0 && clientProjects.includes(task.projectId)) {
+            // Only include parent tasks (tasks without parentId) to avoid double-counting
+            if (task.timeSpent && task.timeSpent > 0 && !task.parentId && clientProjects.includes(task.projectId)) {
               const taskDate = new Date(task.changed || task.created);
               if (taskDate >= cutoffDate && taskDate <= endDate) {
                 const hours = task.timeSpent / (1000 * 60 * 60);
@@ -675,14 +691,11 @@
                 }
                 projectHours[task.projectId] += hours;
                 
-                // Only include parent tasks (tasks without parentId)
-                if (!task.parentId) {
-                  projectTasks[task.projectId].push({
-                    id: task.id,
-                    title: task.title,
-                    hours: hours
-                  });
-                }
+                projectTasks[task.projectId].push({
+                  id: task.id,
+                  title: task.title,
+                  hours: hours
+                });
               }
             }
           });
@@ -734,8 +747,18 @@
           let descriptionContent = `<div style="font-weight: 600;">${projectName}</div>`;
           
           if (itemizationLevel === 2 && projectTasks[projectId] && projectTasks[projectId].length > 0) {
-            const taskList = projectTasks[projectId].map(t => 
-              `<div style="font-size: 12px; color: #666; padding: 2px 0; padding-left: 20px;">• ${t.title} (${t.hours.toFixed(2)}h)</div>`
+            // Merge tasks with the same name
+            const mergedTasks = {};
+            projectTasks[projectId].forEach(t => {
+              if (mergedTasks[t.title]) {
+                mergedTasks[t.title] += t.hours;
+              } else {
+                mergedTasks[t.title] = t.hours;
+              }
+            });
+            
+            const taskList = Object.entries(mergedTasks).map(([title, hours]) => 
+              `<div style="font-size: 12px; color: #666; padding: 2px 0; padding-left: 20px;">• ${title} (${hours.toFixed(2)}h)</div>`
             ).join('\n');
             descriptionContent += taskList;
           }
